@@ -101,6 +101,38 @@ public class StringLiteralTest extends AbstractParserTest {
 		}
 	}
 	
+	public void testWsAfterRef() {
+		checkPlainOrRefString("${something} ", "ref:something", " ");
+	}
+	
+	protected void checkPlainOrRefString(String input, String... expectation) {
+		IParseResult result = parseSuccessfully(input);
+		StringLiteral literal = (StringLiteral) result.getRootASTElement();
+		int i = 0;
+		LinkingHelper linkingHelper = get(LinkingHelper.class);
+		for(StringPart part: literal.getParts()) {
+			if (part instanceof PropertyReference) {
+				assertTrue(expectation[i].startsWith("ref:"));
+				String expected = expectation[i].substring(4);
+				NodeAdapter adapter = NodeUtil.getNodeAdapter(part);
+				CompositeNode node = adapter.getParserNode();
+				for(AbstractNode child: node.getChildren()) {
+					if (child.getGrammarElement() instanceof CrossReference) {
+						String nodeAsString = linkingHelper.getCrossRefNodeAsString(child, true);
+						assertEquals(expected, nodeAsString);
+					}
+				}
+			} else if (part instanceof PlainString) {
+				PlainString plain = (PlainString) part;
+				assertEquals(input, expectation[i], plain.getValue());
+			} else {
+				fail("Unexpected StringPart: " + part);
+			}
+			i++;						
+		}
+		assertEquals(expectation.length, literal.getParts().size());
+	}
+	
 	protected void checkReference(String input, String... expectedReferences) {
 		IParseResult result = parseSuccessfully(input);
 		StringLiteral literal = (StringLiteral) result.getRootASTElement();

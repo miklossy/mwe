@@ -239,6 +239,38 @@ public class ContentAssistTest extends AbstractContentAssistProcessorTest implem
 					"${", "\"");
 	}
 	
+	public void testCompleteStringLiteral_07() throws Exception {
+		newBuilder()
+			.appendNl("var message = 'zonk'")
+			.append("var other = \" $\"")
+			.assertTextAtCursorPosition("$", 1,
+					"${", "\"");
+	}
+	
+	public void testCompleteStringPropertyReference_01() throws Exception {
+		newBuilder()
+			.appendNl("var message = 'zonk'")
+			.append("var other = \" ${ message ")
+			.assertText(
+					"}");
+	}
+	
+	public void testCompleteStringPropertyReference_02() throws Exception {
+		newBuilder()
+			.appendNl("var message = 'zonk'")
+			.append("var other = \" ${ message")
+			.assertText(
+					"message", "}");
+	}
+	
+	public void testCompleteStringPropertyReference_03() throws Exception {
+		newBuilder()
+			.appendNl("var message = 'zonk'")
+			.append("var other = \" ${ message}")
+			.assertText(
+					"${", "}", "\"");
+	}
+	
 	public void testCompleteProperty_01() throws Exception {
 		newBuilder()
 		.appendNl("StringBuilder {")

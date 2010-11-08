@@ -41,7 +41,7 @@ public class SemanticHighlightingCalculator implements ISemanticHighlightingCalc
 		Iterable<AbstractNode> allNodes = NodeUtil.getAllContents(resource.getParseResult().getRootNode());
 		for (AbstractNode abstractNode : allNodes) {
 			EObject grammarElement = abstractNode.getGrammarElement();
-			if (grammarElement == grammarAccess.getPropertyReferenceAccess()
+			if (grammarElement == grammarAccess.getPropertyReferenceImplAccess()
 					.getReferableDeclaredPropertyCrossReference_1_0()) {
 				highlightNode(abstractNode, MweHighlightingConfiguration.PROPERTY_REF, acceptor);
 				highlightNode(abstractNode, MweHighlightingConfiguration.STRING_PROP_REF, acceptor);
@@ -59,8 +59,8 @@ public class SemanticHighlightingCalculator implements ISemanticHighlightingCalc
 						}
 					}
 				}
-			} else if (grammarElement == grammarAccess.getPropertyReferenceAccess().getDollarSignLeftCurlyBracketKeyword_0()
-					|| grammarElement == grammarAccess.getPropertyReferenceAccess().getRightCurlyBracketKeyword_2()) {
+			} else if (grammarElement == grammarAccess.getPropertyReferenceImplAccess().getDollarSignLeftCurlyBracketKeyword_0()
+					|| grammarElement == grammarAccess.getPropertyReferenceAccess().getRightCurlyBracketKeyword_1()) {
 				highlightNode(abstractNode, MweHighlightingConfiguration.STRING_PROP_REF, acceptor);
 			} else if (grammarElement == grammarAccess.getReferenceAccess()
 					.getReferableReferrableCrossReference_0()) {

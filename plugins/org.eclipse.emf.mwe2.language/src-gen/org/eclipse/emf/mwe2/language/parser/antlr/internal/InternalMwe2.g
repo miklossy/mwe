@@ -794,8 +794,8 @@ ruleValue returns [EObject current=null]
         currentNode=createCompositeNode(grammarAccess.getValueAccess().getComponentParserRuleCall_0(), currentNode); 
     }
     this_Component_0=ruleComponent
-    { 
-        $current = $this_Component_0.current; 
+    {
+        $current = $this_Component_0.current;
         currentNode = currentNode.getParent();
     }
 
@@ -804,8 +804,8 @@ ruleValue returns [EObject current=null]
         currentNode=createCompositeNode(grammarAccess.getValueAccess().getStringLiteralParserRuleCall_1(), currentNode); 
     }
     this_StringLiteral_1=ruleStringLiteral
-    { 
-        $current = $this_StringLiteral_1.current; 
+    {
+        $current = $this_StringLiteral_1.current;
         currentNode = currentNode.getParent();
     }
 
@@ -814,8 +814,8 @@ ruleValue returns [EObject current=null]
         currentNode=createCompositeNode(grammarAccess.getValueAccess().getBooleanLiteralParserRuleCall_2(), currentNode); 
     }
     this_BooleanLiteral_2=ruleBooleanLiteral
-    { 
-        $current = $this_BooleanLiteral_2.current; 
+    {
+        $current = $this_BooleanLiteral_2.current;
         currentNode = currentNode.getParent();
     }
 
@@ -824,8 +824,8 @@ ruleValue returns [EObject current=null]
         currentNode=createCompositeNode(grammarAccess.getValueAccess().getReferenceParserRuleCall_3(), currentNode); 
     }
     this_Reference_3=ruleReference
-    { 
-        $current = $this_Reference_3.current; 
+    {
+        $current = $this_Reference_3.current;
         currentNode = currentNode.getParent();
     }
 )
@@ -1248,7 +1248,7 @@ finally {
 // Entry rule entryRulePropertyReference
 entryRulePropertyReference returns [EObject current=null]
 	@init { 
-		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens();
 	}
 	:
 	{ currentNode = createCompositeNode(grammarAccess.getPropertyReferenceRule(), currentNode); }
@@ -1263,6 +1263,53 @@ finally {
 // Rule PropertyReference
 rulePropertyReference returns [EObject current=null] 
     @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens();
+    }
+    @after { resetLookahead(); 
+    	lastConsumedNode = currentNode;
+    }:
+(
+    { 
+        currentNode=createCompositeNode(grammarAccess.getPropertyReferenceAccess().getPropertyReferenceImplParserRuleCall_0(), currentNode); 
+    }
+    this_PropertyReferenceImpl_0=rulePropertyReferenceImpl
+    {
+        $current = $this_PropertyReferenceImpl_0.current;
+        currentNode = currentNode.getParent();
+    }
+
+	KEYWORD_8 
+    {
+        createLeafNode(grammarAccess.getPropertyReferenceAccess().getRightCurlyBracketKeyword_1(), null); 
+    }
+)
+;
+finally {
+	myHiddenTokenState.restore();
+}
+
+
+
+
+
+// Entry rule entryRulePropertyReferenceImpl
+entryRulePropertyReferenceImpl returns [EObject current=null]
+	@init { 
+		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
+	}
+	:
+	{ currentNode = createCompositeNode(grammarAccess.getPropertyReferenceImplRule(), currentNode); }
+	 iv_rulePropertyReferenceImpl=rulePropertyReferenceImpl 
+	 { $current=$iv_rulePropertyReferenceImpl.current; } 
+	 EOF 
+;
+finally {
+	myHiddenTokenState.restore();
+}
+
+// Rule PropertyReferenceImpl
+rulePropertyReferenceImpl returns [EObject current=null] 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
     }
     @after { resetLookahead(); 
@@ -1271,30 +1318,25 @@ rulePropertyReference returns [EObject current=null]
 (
 	KEYWORD_9 
     {
-        createLeafNode(grammarAccess.getPropertyReferenceAccess().getDollarSignLeftCurlyBracketKeyword_0(), null); 
+        createLeafNode(grammarAccess.getPropertyReferenceImplAccess().getDollarSignLeftCurlyBracketKeyword_0(), null); 
     }
 (
 (
 		{
 			if ($current==null) {
-	            $current = factory.create(grammarAccess.getPropertyReferenceRule().getType().getClassifier());
+	            $current = factory.create(grammarAccess.getPropertyReferenceImplRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getPropertyReferenceAccess().getReferableDeclaredPropertyCrossReference_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getPropertyReferenceImplAccess().getReferableDeclaredPropertyCrossReference_1_0(), currentNode); 
 	    }
 		ruleFQN		{ 
 	        currentNode = currentNode.getParent();
 	    }
 
 )
-)
-	KEYWORD_8 
-    {
-        createLeafNode(grammarAccess.getPropertyReferenceAccess().getRightCurlyBracketKeyword_2(), null); 
-    }
-)
+))
 ;
 finally {
 	myHiddenTokenState.restore();
