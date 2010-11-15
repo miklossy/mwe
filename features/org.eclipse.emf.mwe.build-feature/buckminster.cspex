@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cs:cspecExtension xmlns:com="http://www.eclipse.org/buckminster/Common-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+<cs:cspecExtension xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<cs:dependencies>
+		<!-- <cs:dependency name="org.eclipse.emf.mwe.releng" componentType="buckminster" /> -->
 		<cs:dependency name="org.eclipse.emf.mwe.tests" componentType="eclipse.feature" />
 	</cs:dependencies>
+
 
 	<cs:actions>
 		<cs:private name="site.tp" actor="ant">
@@ -12,8 +15,21 @@
 			</cs:actorProperties>
 			<cs:products alias="output" base="${buckminster.output}/site.tp/" />
 		</cs:private>
+		
+		<cs:public name="setup" actor="ant">
+			<cs:actorProperties>
+				<cs:property key="buildFile" value="packaging.ant" />
+				<cs:property key="targets" value="-define.package.qualifier" />
+			</cs:actorProperties>
+		</cs:public>
 
 
+		<cs:public name="create.category.xml" actor="ant">
+			<cs:actorProperties>
+				<cs:property key="buildFile" value="packaging.ant" />
+				<cs:property key="targets" value="-create.category.xml" />
+			</cs:actorProperties>
+		</cs:public>
 
 		<cs:public name="package.emft-mwe-Update" actor="ant">
 			<cs:actorProperties>
@@ -24,6 +40,8 @@
 				<cs:property key="package.name" value="emft-mwe-Update" />
 			</cs:properties>
 			<cs:prerequisites>
+				<cs:attribute name="setup" alias="setup.enviroment" />
+				<cs:attribute name="create.category.xml" alias="create.category" />
 				<cs:attribute name="site.p2" alias="repository" />
 				<cs:attribute name="site.tp" alias="target.platform.repository" />
 			</cs:prerequisites>
@@ -45,7 +63,7 @@
 			<cs:products alias="output" base="${buckminster.output}/zips/" />
 		</cs:public>
 
-		
+
 		<cs:public name="package.emft-mwe-SDK" actor="ant">
 			<cs:actorProperties>
 				<cs:property key="buildFile" value="packaging.ant" />
@@ -84,6 +102,7 @@
 
 	<cs:groups>
 		<cs:public name="build">
+			<cs:attribute name="setup" />
 			<cs:attribute name="package.emft-mwe-Update" />
 			<cs:attribute name="package.emft-mwe-2-Update" />
 			<cs:attribute name="package.emft-mwe-SDK" />

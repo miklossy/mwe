@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cs:cspecExtension xmlns:com="http://www.eclipse.org/buckminster/Common-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<cs:dependencies>
-		<!-- <cs:dependency name="org.eclipse.emf.mwe2.runtime.sdk" componentType="eclipse.feature" />
-	--></cs:dependencies>
+		<cs:dependency name="org.eclipse.emf.mwe2.language.tests" componentType="eclipse.feature" />
+	</cs:dependencies>
 
 	<cs:actions>
 		<cs:private name="site.tp" actor="ant">
@@ -18,7 +18,7 @@
 				<cs:property key="targets" value="package.site" />
 			</cs:actorProperties>
 			<cs:properties>
-				<cs:property key="package.name" value="emft-mwe2-language-Update" />
+				<cs:property key="package.name" value="emft-mwe-2-lang-Update" />
 			</cs:properties>
 			<cs:prerequisites>
 				<cs:attribute name="site.p2" alias="repository" />
@@ -34,7 +34,7 @@
 			</cs:actorProperties>
 			<cs:properties>
 				<cs:property key="content.ius" value="org.eclipse.emf.mwe2.language.sdk.feature.group" />
-				<cs:property key="package.name" value="emft-mwe2-language-SDK" />
+				<cs:property key="package.name" value="emft-mwe-2-lang-SDK" />
 			</cs:properties>
 			<cs:prerequisites>
 				<cs:attribute name="site.p2" alias="repository" />
