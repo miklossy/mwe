@@ -3,7 +3,7 @@
 	<feature id="org.eclipse.emf.mwe2.language.sdk" version="0.0.0">
       <category name="mwe2helios"/>
    </feature>
-   <category-def name="mwe2helios" label="Modeling Workflow Engine 2 Language  Helios">
+   <category-def name="mwe2helios" label="Modeling Workflow Engine 2 Language Helios">
       <description>
          MWE Language features.
       </description>
