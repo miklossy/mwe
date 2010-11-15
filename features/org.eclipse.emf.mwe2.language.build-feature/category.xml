@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
 	<feature id="org.eclipse.emf.mwe2.language.sdk" version="0.0.0">
-      <category name="mwe2"/>
+      <category name="mwe2helios"/>
    </feature>
-   <category-def name="mwe2" label="Modeling Workflow Engine 2 Language">
+   <category-def name="mwe2helios" label="Modeling Workflow Engine 2 Language  Helios">
       <description>
-         MWE features.
+         MWE Language features.
       </description>
    </category-def>
 </site>
