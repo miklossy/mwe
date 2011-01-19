@@ -20,7 +20,10 @@
 	</feature>
 	<category-def name="mwe${package.qualifier}" label="EMFT MWE${package.qualifier}  Helios">
       <description>
-       EMFT Modeling Workflow Engine (MWE)
+        The Modeling Workflow Engine (MWE) supports orchestration of different Eclipse
+        modeling components to be executed within Eclipse as well as standalone.
+        Based on a dependency injection framework, one can simply configure and wire
+        up 'workflows' using a declarative XML-based language.
       </description>
    </category-def>
    
