@@ -1,0 +1,322 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;h1&gt;MWE Build&lt;/h1&gt;&#xd;
+&#xd;
+&lt;h2&gt;Check out&lt;/h2&gt;&#xd;
+MWE is checked out from &lt;a href=&quot;https://github.com/eclipse/mwe.git&quot;&gt;https://github.com/eclipse/mwe.git&lt;/a&gt; to subdir &lt;code&gt;git-repo&lt;/code&gt;&lt;br/&gt;&#xd;
+Only branch &lt;code&gt;master&lt;/code&gt; is build.&lt;br/&gt;&#xd;
+&#xd;
+&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
+      <permission>hudson.model.Item.Build:christian.dietrich@itemis.de</permission>
+      <permission>hudson.model.Item.Configure:christian.dietrich@itemis.de</permission>
+      <permission>hudson.model.Item.ExtendedRead:christian.dietrich@itemis.de</permission>
+      <permission>hudson.model.Item.Read:christian.dietrich@itemis.de</permission>
+      <permission>hudson.model.Item.Workspace:christian.dietrich@itemis.de</permission>
+      <permission>hudson.model.Run.Delete:christian.dietrich@itemis.de</permission>
+      <permission>hudson.model.Run.Update:christian.dietrich@itemis.de</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.28"/>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.29">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>BUILD_TYPE</name>
+          <description>Build type (Nightly,Stable,Release)</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>N</string>
+              <string>S</string>
+              <string>R</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>RELEASE_TYPE</name>
+          <description>Kind of release to build. The chosen value is dependent on the parameter BUILD_TYPE. Use value:
+&lt;ul&gt;
+  &lt;li&gt;&lt;tt&gt;Integration&lt;/tt&gt;: When &lt;tt&gt;BUILD_TYPE = N&lt;/tt&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;tt&gt;GA&lt;/tt&gt;: When &lt;tt&gt;BUILD_TYPE = R&lt;/tt&gt;&lt;/li&gt;
+  &lt;li&gt;Any other (stable/milestone release): When &lt;tt&gt;BUILD_TYPE = S&lt;/tt&gt;&lt;/li&gt;  
+&lt;/ul&gt;</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Integration</string>
+              <string>Beta</string>
+              <string>M1</string>
+              <string>M2</string>
+              <string>M3</string>
+              <string>RC1</string>
+              <string>RC2</string>
+              <string>GA</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition plugin="git-parameter@0.9.10">
+          <name>SOURCE_BRANCH</name>
+          <description></description>
+          <uuid>e47ef91f-eabb-4265-977f-8804d18bd770</uuid>
+          <type>PT_BRANCH</type>
+          <branch></branch>
+          <tagFilter>*</tagFilter>
+          <branchFilter>.*</branchFilter>
+          <sortMode>NONE</sortMode>
+          <defaultValue>origin/master</defaultValue>
+          <selectedValue>NONE</selectedValue>
+          <quickFilterEnabled>false</quickFilterEnabled>
+          <listSize>5</listSize>
+        </net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>sign</name>
+          <description>should artifacts be signed?</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
+        <url>https://github.com/eclipse/mwe.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>${SOURCE_BRANCH}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        <relativeTargetDir>git-repo/</relativeTargetDir>
+      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+      <hudson.plugins.git.extensions.impl.CleanCheckout/>
+    </extensions>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>jdk1.8.0-latest</jdk>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec># every fifteen minutes (perhaps at :07, :22, :37, :52)
+H/15 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># Clean up the build result
+rm -rf build-result/
+mkdir -p build-result/downloads/
+mkdir -p build-result/javadoc/
+mkdir -p build-result/composite/
+# Make .mvn/extensions.xml available for the build (for tycho-pomless extension)
+cp -r git-repo/maven/.mvn .
+
+# call the versioning script when a release is built
+# this will set the final release number for Maven artifacts according to RELEASE_TYPE
+# and disable strict version checking by Tycho, so that p2 artifacts keep their qualifier
+if [ &quot;$RELEASE_TYPE&quot; != &quot;Integration&quot; ]; then
+  pushd $(pwd) &amp;&amp; cd git-repo
+  bash ./set_version.sh --release=$RELEASE_TYPE
+  popd
+fi
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Maven>
+      <targets>clean
+javadoc:aggregate-jar
+deploy
+</targets>
+      <mavenName>apache-maven-latest</mavenName>
+      <pom>git-repo/maven/org.eclipse.emf.mwe2.parent/pom.xml</pom>
+      <properties>sign.skip=false
+testFailureIgnore=true
+maven.javadoc.failOnError=false
+tycho.localArtifacts=ignore
+BUILD_TYPE=${BUILD_TYPE}</properties>
+      <usePrivateRepository>true</usePrivateRepository>
+      <settings class="jenkins.mvn.FilePathSettingsProvider">
+        <path>/opt/public/hipp/homes/genie.emf/.m2/settings-deploy-ossrh.xml</path>
+      </settings>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <injectBuildVariables>true</injectBuildVariables>
+    </hudson.tasks.Maven>
+    <hudson.tasks.Shell>
+      <command>cp git-repo/maven/org.eclipse.emf.mwe2.repository/target/repository/*.properties build-result/
+
+# read properties from promote.properties &amp; publisher.properties
+BUILD_ID=$(grep -iR &quot;^build.id&quot; build-result/promote.properties | awk -F &quot;=&quot; &apos;{print $2}&apos;)
+VERSION=$(grep -iR &quot;^version&quot; build-result/publisher.properties | awk -F &quot;=&quot; &apos;{print $2}&apos;)
+DOWNLOAD_AREA=$(grep -iR &quot;^downloads.area&quot; build-result/publisher.properties | awk -F &quot;=&quot; &apos;{print $2}&apos;)
+
+DROP_DIR=$DOWNLOAD_AREA/downloads/drops/$VERSION/$BUILD_ID
+
+# move built repository to &apos;build-result&apos; directory
+cp -R git-repo/maven/org.eclipse.emf.mwe2.parent/target/apidocs/* build-result/javadoc
+mv git-repo/maven/org.eclipse.emf.mwe2.repository/target/repository build-result/p2.repository
+mv git-repo/maven/org.eclipse.emf.mwe2.repository/target/emft-mwe-2-lang-Update-$BUILD_ID.zip build-result/downloads/
+
+REPO_SOURCE_DIR=build-result/p2.repository
+if [ &quot;$BUILD_TYPE&quot; == &quot;N&quot; ]; then
+  REPO_TARGET_DIR=$DOWNLOAD_AREA/updates/nightly
+elif [ &quot;$BUILD_TYPE&quot; == &quot;S&quot; ]; then
+  REPO_TARGET_DIR=$DOWNLOAD_AREA/updates/milestones/$BUILD_ID
+  scp genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/milestones/compositeArtifacts.xml  build-result/composite/
+  scp genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/milestones/compositeContent.xml  build-result/composite/
+elif [ &quot;$BUILD_TYPE&quot; == &quot;R&quot; ]; then
+  REPO_TARGET_DIR=$DOWNLOAD_AREA/updates/releases/$VERSION
+  scp genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/releases/compositeArtifacts.xml  build-result/composite/
+  scp genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/releases/compositeContent.xml  build-result/composite/
+  # rename release version: BUILD_ID =&gt; VERSION
+  mv build-result/downloads/emft-mwe-2-lang-Update-$BUILD_ID.zip build-result/downloads/emft-mwe-2-lang-Update-$VERSION.zip
+fi
+
+</command>
+    </hudson.tasks.Shell>
+    <hudson.plugins.groovy.Groovy plugin="groovy@2.1">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>import jenkins.model.*
+import hudson.model.*
+import groovy.xml.XmlUtil
+
+def addChildToComposite (String compositeDescriptorPath, String childLocation) {
+  XmlUtil xmlUtil = new XmlUtil()
+  def xmlFromFile = new File(compositeDescriptorPath)
+  def repository = new XmlSlurper( false, false ).parseText(xmlFromFile.getText())
+  xmlUtil.serialize(repository, new FileWriter(new File(compositeDescriptorPath+&quot;.bak&quot;)))
+  
+  repository.properties.property[0].value = System.currentTimeMillis()
+  if (!repository.children.child.any { node -&gt; node.@location == childLocation }) {
+    repository.children.appendNode {
+      child (location:childLocation)
+    }
+    repository.children.@size=repository.children.size // update size attribute
+    println &quot;${compositeDescriptorPath}: child ${childLocation} added&quot;
+  } else {
+    println &quot;${compositeDescriptorPath}: child ${childLocation} already exists&quot;
+  }
+  xmlUtil.serialize(repository, new FileWriter(xmlFromFile))
+}
+
+def getBuildId (String promotePropertiesPath) {
+  Properties props = new Properties()
+  File propsFile = new File(promotePropertiesPath)
+  props.load(propsFile.newDataInputStream())
+  return props.getProperty(&apos;build.id&apos;)
+}
+
+def getVersion (String publisherPropertiesPath) {
+  Properties props = new Properties()
+  File propsFile = new File(publisherPropertiesPath)
+  props.load(propsFile.newDataInputStream())
+  return props.getProperty(&apos;version&apos;)
+}
+
+def buildType = System.getProperty(&apos;BUILD_TYPE&apos;)
+def buildId = getBuildId(&apos;build-result/promote.properties&apos;)
+def version = getVersion(&apos;build-result/publisher.properties&apos;)
+
+if (buildType == &apos;S&apos;) {
+  addChildToComposite(&apos;build-result/composite/compositeArtifacts.xml&apos;, buildId)
+  addChildToComposite(&apos;build-result/composite/compositeContent.xml&apos;, buildId)
+}
+if (buildType == &apos;R&apos;) {
+  addChildToComposite(&apos;build-result/composite/compositeArtifacts.xml&apos;, version)
+  addChildToComposite(&apos;build-result/composite/compositeContent.xml&apos;, version)
+}
+</command>
+      </scriptSource>
+      <groovyName>Groovy 2.5.5</groovyName>
+      <parameters></parameters>
+      <scriptParameters></scriptParameters>
+      <properties>BUILD_TYPE=$BUILD_TYPE</properties>
+      <javaOpts></javaOpts>
+      <classPath></classPath>
+    </hudson.plugins.groovy.Groovy>
+    <hudson.tasks.Shell>
+      <command># upload p2 repository, repository zip and composite sites
+
+# read properties from promote.properties &amp; publisher.properties
+BUILD_ID=$(grep -iR &quot;^build.id&quot; build-result/promote.properties | awk -F &quot;=&quot; &apos;{print $2}&apos;)
+VERSION=$(grep -iR &quot;^version&quot; build-result/publisher.properties | awk -F &quot;=&quot; &apos;{print $2}&apos;)
+DOWNLOAD_AREA=$(grep -iR &quot;^downloads.area&quot; build-result/publisher.properties | awk -F &quot;=&quot; &apos;{print $2}&apos;)
+
+DROP_DIR=$DOWNLOAD_AREA/downloads/drops/$VERSION/$BUILD_ID
+
+REPO_SOURCE_DIR=build-result/p2.repository
+if [ &quot;$BUILD_TYPE&quot; == &quot;N&quot; ]; then
+  REPO_TARGET_DIR=$DOWNLOAD_AREA/updates/nightly
+elif [ &quot;$BUILD_TYPE&quot; == &quot;S&quot; ]; then
+  REPO_TARGET_DIR=$DOWNLOAD_AREA/updates/milestones/$BUILD_ID
+  # update composite repositories
+  scp build-result/composite/compositeArtifacts.xml genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/milestones/
+  scp build-result/composite/compositeContent.xml genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/milestones/
+elif [ &quot;$BUILD_TYPE&quot; == &quot;R&quot; ]; then
+  REPO_TARGET_DIR=$DOWNLOAD_AREA/updates/releases/$VERSION
+  # update composite repositories
+  scp build-result/composite/compositeArtifacts.xml genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/releases/
+  scp build-result/composite/compositeContent.xml genie.mwe@projects-storage.eclipse.org:$DOWNLOAD_AREA/updates/releases/
+fi
+
+# make sure p2 repository exists, cleanup and copy repo to there
+ssh -x genie.mwe@projects-storage.eclipse.org mkdir -p $REPO_TARGET_DIR
+ssh -x genie.mwe@projects-storage.eclipse.org rm -rf $REPO_TARGET_DIR/*
+scp -r $REPO_SOURCE_DIR/* genie.mwe@projects-storage.eclipse.org:$REPO_TARGET_DIR
+
+# make sure that drop directory exists, cleanup and copy zipped repo to there
+ssh -x genie.mwe@projects-storage.eclipse.org mkdir -p $DROP_DIR
+ssh -x genie.mwe@projects-storage.eclipse.org rm -rf $DROP_DIR/*
+scp build-result/downloads/emft-mwe-*.zip genie.mwe@projects-storage.eclipse.org:$DROP_DIR/
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>build-result/**</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.junit.JUnitResultArchiver plugin="junit@1.27">
+      <testResults>git-repo/tests/**/target/surefire-reports/*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <healthScaleFactor>1.0</healthScaleFactor>
+      <allowEmptyResults>false</allowEmptyResults>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.tasks.Mailer plugin="mailer@1.23">
+      <recipients>karsten.thoms@itemis.de</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.xvnc.Xvnc plugin="xvnc@1.24">
+      <takeScreenshot>false</takeScreenshot>
+      <useXauthority>true</useXauthority>
+    </hudson.plugins.xvnc.Xvnc>
+    <com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper plugin="ssh-agent@1.17">
+      <credentialIds>
+        <string>2841dfe3-2f32-45e6-a7a7-57f90860984c</string>
+      </credentialIds>
+      <ignoreMissing>true</ignoreMissing>
+    </com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper>
+  </buildWrappers>
+</project>
